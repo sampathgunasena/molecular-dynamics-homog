@@ -25,7 +25,12 @@ velocity		all create 1.0 199956 mom no
 timestep		0.01
 
 thermo_style	custom step temp etotal pe ke press vol density
-thermo		500
+thermo		250
+
+dump		2 all custom 250 position.lammpstrj id x y z vx vy vz
+
+compute		RDF all rdf 150 cutoff 3.5
+fix		RD_OUT all ave/time 100 5 1000 c_RDF[*] file rdf.out mode vector
 
 run_style		verlet
 

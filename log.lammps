@@ -15,7 +15,7 @@ Created orthogonal box = (0.0000000 0.0000000 0.0000000) to (11.856311 11.856311
   1 by 1 by 1 MPI processor grid
 create_atoms	1 box
 Created 1000 atoms
-  create_atoms CPU = 0.001 seconds
+  create_atoms CPU = 0.000 seconds
 
 #setting up potentials
 pair_style		lj/cut 3.5
@@ -33,7 +33,12 @@ velocity		all create 1.0 199956 mom no
 timestep		0.01
 
 thermo_style	custom step temp etotal pe ke press vol density
-thermo		500
+thermo		250
+
+dump		2 all custom 250 position.lammpstrj id x y z vx vy vz
+
+compute		RDF all rdf 150 cutoff 3.5
+fix		RD_OUT all ave/time 100 5 1000 c_RDF[*] file rdf.out mode vector
 
 run_style		verlet
 
@@ -44,31 +49,38 @@ Neighbor list info ...
   master list distance cutoff = 3.8
   ghost atom cutoff = 3.8
   binsize = 1.9, bins = 7 7 7
-  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  2 neighbor lists, perpetual/occasional/extra = 1 1 0
   (1) pair lj/cut, perpetual
       attributes: half, newton on
       pair build: half/bin/atomonly/newton
       stencil: half/bin/3d/newton
       bin: standard
-Per MPI rank memory allocation (min/avg/max) = 3.245 | 3.245 | 3.245 Mbytes
+  (2) compute rdf, occasional
+      attributes: half, newton on, cut 3.8
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 5.227 | 5.227 | 5.227 Mbytes
 Step Temp TotEng PotEng KinEng Press Volume Density 
        0            1    -2.709841    -4.208341       1.4985   -2.6415761    1666.6667          0.6 
+     250   0.91235681   -2.6660742   -4.0332409    1.3671667  -0.34560166    1666.6667          0.6 
      500   0.97614671   -2.6089308   -4.0716867    1.4627558  -0.10583518    1666.6667          0.6 
+     750   0.97516489   -2.5729114    -4.034196    1.4612846    -0.178019    1666.6667          0.6 
     1000   0.98214378   -2.5304241   -4.0021666    1.4717425  -0.19978584    1666.6667          0.6 
-Loop time of 1.46004 on 1 procs for 1000 steps with 1000 atoms
+Loop time of 1.50019 on 1 procs for 1000 steps with 1000 atoms
 
-Performance: 591763.026 tau/day, 684.911 timesteps/s
-100.6% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 575926.676 tau/day, 666.582 timesteps/s
+100.0% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.1312     | 1.1312     | 1.1312     |   0.0 | 77.48
-Neigh   | 0.31023    | 0.31023    | 0.31023    |   0.0 | 21.25
-Comm    | 0.016625   | 0.016625   | 0.016625   |   0.0 |  1.14
-Output  | 0          | 0          | 0          |   0.0 |  0.00
-Modify  | 0.0020068  | 0.0020068  | 0.0020068  |   0.0 |  0.14
-Other   |            | 0          |            |       |  0.00
+Pair    | 1.2019     | 1.2019     | 1.2019     |   0.0 | 80.12
+Neigh   | 0.22874    | 0.22874    | 0.22874    |   0.0 | 15.25
+Comm    | 0.048887   | 0.048887   | 0.048887   |   0.0 |  3.26
+Output  | 0.019621   | 0.019621   | 0.019621   |   0.0 |  1.31
+Modify  | 3.2902e-05 | 3.2902e-05 | 3.2902e-05 |   0.0 |  0.00
+Other   |            | 0.001005   |            |       |  0.07
 
 Nlocal:        1000.00 ave        1000 max        1000 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
@@ -83,4 +95,4 @@ Neighbor list builds = 100
 Dangerous builds = 100
 
 
-Total wall time: 0:00:03
+Total wall time: 0:00:01
